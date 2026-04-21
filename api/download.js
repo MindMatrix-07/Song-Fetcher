@@ -60,7 +60,6 @@ module.exports = async function handler(req, res) {
     
     // Download Wrapper actually performs the fetching
     // downloader.downloadObject contains the info
-    // Wait, let's look at `deemix`'s CLI app.js to see how it starts it.
     // Usually it's setupQueue or just iterate through dlObj
     
     // Actually, downloader has downloadObject. Let's just download the single track.
@@ -72,26 +71,25 @@ module.exports = async function handler(req, res) {
             throw new Error(result.error.message || "Download error");
         }
         
-        let files = fs.readdirSync(tmpDir); // check the written files 
-        // We know tracknameTemplate is %id% so it should be trackItem.trackAPI.id + ".mp3" or ".flac"
-        let ext = bitrateVal === 9 ? ".flac" : ".mp3";
-        let filePath = path.join(tmpDir, trackItem.trackAPI.id + ext);
+        let filePath = result.path;
         
-        if (!fs.existsSync(filePath)) {
+        if (!filePath || !fs.existsSync(filePath)) {
            // fallback logic to find easiest recent file in tmpDir
+           let files = fs.readdirSync(tmpDir);
            let matched = files.find(f => f.includes(String(trackItem.trackAPI.id)));
            if (matched) {
                filePath = path.join(tmpDir, matched);
            } else {
-               throw new Error("File output missing: " + filePath);
+               throw new Error("File output missing: " + (filePath || trackItem.trackAPI.id));
            }
         }
         
+        const ext = path.extname(filePath).toLowerCase();
         const stat = fs.statSync(filePath);
         res.writeHead(200, {
-            'Content-Type': bitrateVal === 9 ? 'audio/flac' : 'audio/mpeg',
+            'Content-Type': ext === '.flac' ? 'audio/flac' : 'audio/mpeg',
             'Content-Length': stat.size,
-            'Content-Disposition': `attachment; filename="${trackItem.trackAPI.title}${ext}"`
+            'Content-Disposition': `attachment; filename="${trackItem.trackAPI.id}${ext}"`
         });
 
         const readStream = fs.createReadStream(filePath);
