@@ -67,7 +67,7 @@ module.exports = async function handler(req, res) {
     if (dlObj.__type__ === 'Single') {
         const trackItem = dlObj.single;
         let track = await deemix.itemgen.generateTrackItem(dz, trackItem.trackAPI.id, bitrateVal);
-        let result = await downloader.downloadWrapper(null, track);
+        let result = await downloader.downloadWrapper(trackItem, track);
         if (result && result.error) {
             throw new Error(result.error.message || "Download error");
         }
