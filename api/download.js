@@ -52,6 +52,7 @@ module.exports = async function handler(req, res) {
     settings.saveArtwork = false;    // Save time and tmp space
     settings.saveLyrics = false;
     settings.overwriteFile = true;
+    settings.fallbackBitrate = true;
     settings.tags = { ...settings.tags, saveArtworkArtist: false };
 
     // Set up downloader
