@@ -31,7 +31,7 @@ module.exports = async function handler(req, res) {
     
     // Deemix/Deezer-js does not expose simple search out of the box nicely.
     // Let's just proxy the API call exactly as the python bridge did:
-    const fetch = require('node-fetch') || require('got') || global.fetch;
+    // Use native Node fetch available in Vercel environments (Node 18+)
     const url = `https://api.deezer.com/search?q=${encodeURIComponent(q)}&limit=${limit}&output=json`;
     
     const headers = {
