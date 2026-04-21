@@ -1,0 +1,14 @@
+{
+  "name": "song-fetcher-vercel",
+  "version": "1.0.0",
+  "description": "Vercel proxy for deemix to bypass geo-restrictions",
+  "main": "api/download.js",
+  "scripts": {
+    "start": "node api/download.js"
+  },
+  "dependencies": {
+    "deemix": "^3.6.14",
+    "deezer-js": "^1.3.8",
+    "express": "^4.18.2"
+  }
+}
